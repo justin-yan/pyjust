@@ -19,6 +19,7 @@ PLATFORMS = {
     'x86_64-apple-darwin': 'macosx_10_9_x86_64',
     'x86_64-unknown-linux-musl': 'manylinux_2_12_x86_64.manylinux2010_x86_64.musllinux_1_1_x86_64',
 }
+SUMMARY = "A thin wrapper to distribute just via pip."
 LICENSE = "CC0 1.0 Universal"
 #######
 ### End mapping section
@@ -60,17 +61,16 @@ def convert_archive_to_wheel(
         for entry in tar:
             if entry.isreg():
                 if entry.name.split('/')[-1] == f"{name}":
-                    # zip_info = ZipInfo()
-                    # zip_info.external_attr = ((entry.mode | (1 << 15)) & 0xFFFF) << 16
                     contents[f'{datadir}/scripts/{name}'] = tar.extractfile(entry).read()
 
     # Create distinfo
     tag = f'py3-none-{platform_tag}'
-    metadata = {'Summary': '',
+    metadata = {'Summary': SUMMARY,
                 'Description-Content-Type': 'text/markdown',
                 'License': LICENSE,
                 'Requires-Python': '~=3.5'}
-    description = ''
+    with open('README.md') as f:
+        description = f.read()
     dist_info = f'{package_name}-{pypi_version}.dist-info'
     contents[f'{dist_info}/METADATA'] = make_message({
             'Metadata-Version': '2.1',
