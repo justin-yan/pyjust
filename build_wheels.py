@@ -51,33 +51,20 @@ def convert_archive_to_wheel(
         archive: bytes,
         platform_tag: str
 ):
+    package_name = f'py{name}'
     contents = {}
-    contents[f'py{name}/__init__.py'] = b''
-    contents[f'py{name}/entrypoint.py'] = f'''\
-import subprocess
-import sys
-import os
-
-def main() -> None:
-    completed_process = subprocess.run(
-        [os.path.join(os.path.dirname(__file__), "alt{name}"), *sys.argv[1:]]
-    )
-    sys.exit(completed_process.returncode)
-
-if __name__ == "__main__":
-    main()
-'''.encode('ascii')
 
     # Extract the command binary
+    datadir = f'{package_name}-{pypi_version}.data'
     with tarfile.open(mode="r:gz", fileobj=io.BytesIO(archive)) as tar:
         for entry in tar:
             if entry.isreg():
                 if entry.name.split('/')[-1] == f"{name}":
-                    zip_info = ZipInfo(f'py{name}/alt{entry.name}')
-                    zip_info.external_attr = ((entry.mode | (1 << 15)) & 0xFFFF) << 16
-                    contents[zip_info] = tar.extractfile(entry).read()
+                    # zip_info = ZipInfo()
+                    # zip_info.external_attr = ((entry.mode | (1 << 15)) & 0xFFFF) << 16
+                    contents[f'{datadir}/scripts/{name}'] = tar.extractfile(entry).read()
 
-    package_name = f'py{name}'
+    # Create distinfo
     tag = f'py3-none-{platform_tag}'
     metadata = {'Summary': '',
                 'Description-Content-Type': 'text/markdown',
@@ -87,28 +74,24 @@ if __name__ == "__main__":
                 ],
                 'Requires-Python': '~=3.5'}
     description = ''
-    wheel_name = f'{package_name}-{pypi_version}-{tag}.whl'
     dist_info = f'{package_name}-{pypi_version}.dist-info'
-    outdir = "dist"
-    Path(outdir).mkdir(exist_ok=True)
-    return write_wheel_file(os.path.join(outdir, wheel_name), {
-        **contents,
-        f'{dist_info}/METADATA': make_message({
+    contents[f'{dist_info}/METADATA'] = make_message({
             'Metadata-Version': '2.1',
             'Name': package_name,
             'Version': pypi_version,
             **metadata,
-        }, description),
-        f'{dist_info}/WHEEL': make_message({
+        }, description)
+    contents[f'{dist_info}/WHEEL'] = make_message({
             'Wheel-Version': '1.0',
-            'Generator': f'py{name} build_wheels.py',
+            'Generator': f'{package_name} build_wheels.py',
             'Root-Is-Purelib': 'false',
             'Tag': tag,
-        }),
-        f'{dist_info}/entry_points.txt': f"""\
-[console_scripts]
-{name} = py{name}.entrypoint:main""".encode('ascii'),
-    })
+        })
+
+    wheel_name = f'{package_name}-{pypi_version}-{tag}.whl'
+    outdir = "dist"
+    Path(outdir).mkdir(exist_ok=True)
+    return write_wheel_file(os.path.join(outdir, wheel_name), contents)
 
 
 def build_wheel(name: str, base_url: str, version: str, pypi_version: str, target: str, platform_tag: str):
