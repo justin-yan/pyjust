@@ -14,12 +14,12 @@ from wheel.wheelfile import WheelFile
 ### Define mapping of archive name to pypi platform tag
 #######
 PLATFORMS = {
-    # https://packaging.python.org/en/latest/specifications/platform-compatibility-tags/
     'aarch64-apple-darwin': 'macosx_11_0_arm64',
     'aarch64-unknown-linux-musl': 'manylinux_2_17_aarch64.manylinux2014_aarch64.musllinux_1_1_aarch64',
     'x86_64-apple-darwin': 'macosx_10_9_x86_64',
     'x86_64-unknown-linux-musl': 'manylinux_2_12_x86_64.manylinux2010_x86_64.musllinux_1_1_x86_64',
 }
+LICENSE = "CC0 1.0 Universal"
 #######
 ### End mapping section
 #######
@@ -68,10 +68,7 @@ def convert_archive_to_wheel(
     tag = f'py3-none-{platform_tag}'
     metadata = {'Summary': '',
                 'Description-Content-Type': 'text/markdown',
-                'License': 'MIT',
-                'Classifier': [
-                    'License :: OSI Approved :: MIT License',
-                ],
+                'License': LICENSE,
                 'Requires-Python': '~=3.5'}
     description = ''
     dist_info = f'{package_name}-{pypi_version}.dist-info'

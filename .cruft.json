@@ -1,0 +1,13 @@
+{
+  "template": "git+ssh://git@github.com/justin-yan/templates-cruft",
+  "commit": "258f55c486e3d5faee789dd1aea350012284962e",
+  "checkout": null,
+  "context": {
+    "cookiecutter": {
+      "name": "just",
+      "github_username": "@justin-yan",
+      "_template": "git+ssh://git@github.com/justin-yan/templates-cruft"
+    }
+  },
+  "directory": "packages-public/pybin"
+}
