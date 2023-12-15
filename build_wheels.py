@@ -3,10 +3,9 @@ import io
 import os
 import tarfile
 import urllib.request
-import urllib.request
 from email.message import EmailMessage
 from pathlib import Path
-from zipfile import ZipInfo
+from zipfile import ZipInfo, ZIP_DEFLATED
 
 from wheel.wheelfile import WheelFile
 
