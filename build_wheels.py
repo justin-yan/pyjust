@@ -62,14 +62,20 @@ def convert_archive_to_wheel(
         for entry in tar:
             if entry.isreg():
                 if entry.name.split('/')[-1] == f"{name}":
-                    contents[f'{datadir}/scripts/{name}'] = tar.extractfile(entry).read()
+                    source = tar.extractfile(entry).read()
+                    zip_info = ZipInfo(f'{datadir}/scripts/py{name}', (2023,12,1,0,0,0))
+                    zip_info.external_attr = 0o100777 << 16  # This is needed to force filetype and permissions
+                    zip_info.file_size = len(source)
+                    zip_info.compress_type = ZIP_DEFLATED
+                    zip_info.create_system = 3
+                    contents[zip_info] = source
 
     # Create distinfo
     tag = f'py3-none-{platform_tag}'
     metadata = {'Summary': SUMMARY,
                 'Description-Content-Type': 'text/markdown',
                 'License': LICENSE,
-                'Requires-Python': '~=3.5',
+                'Requires-Python': '>=3.7',
                 'Project-URL': f'Repository, {REPO_URL}',
                 }
     with open('README.md') as f:
