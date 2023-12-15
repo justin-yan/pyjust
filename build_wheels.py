@@ -21,6 +21,7 @@ PLATFORMS = {
 }
 SUMMARY = "A thin wrapper to distribute just via pip."
 LICENSE = "CC0 1.0 Universal"
+REPO_URL = "https://github.com/justin-yan/pyjust"
 #######
 ### End mapping section
 #######
@@ -68,7 +69,9 @@ def convert_archive_to_wheel(
     metadata = {'Summary': SUMMARY,
                 'Description-Content-Type': 'text/markdown',
                 'License': LICENSE,
-                'Requires-Python': '~=3.5'}
+                'Requires-Python': '~=3.5',
+                'Project-URL': f'Repository, {REPO_URL}',
+                }
     with open('README.md') as f:
         description = f.read()
     dist_info = f'{package_name}-{pypi_version}.dist-info'
