@@ -62,7 +62,7 @@ def convert_archive_to_wheel(
             if entry.isreg():
                 if entry.name.split('/')[-1] == f"{name}":
                     source = tar.extractfile(entry).read()
-                    zip_info = ZipInfo(f'{datadir}/scripts/py{name}', (2023,12,1,0,0,0))
+                    zip_info = ZipInfo(f'{datadir}/scripts/{name}', (2023,12,1,0,0,0))
                     zip_info.external_attr = 0o100777 << 16  # This is needed to force filetype and permissions
                     zip_info.file_size = len(source)
                     zip_info.compress_type = ZIP_DEFLATED
