@@ -1,6 +1,6 @@
 NAME:='just'
-VERSION:='1.17.0'
-PYPI_VERSION:='1.17.0'
+VERSION:='1.18.0'
+PYPI_VERSION:='1.18.0'
 URL:='https://github.com/casey/just/releases'
 
 
